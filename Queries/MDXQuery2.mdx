@@ -1,0 +1,178 @@
+--basic query
+select non empty 
+measures.[sales amount] on columns,
+[Due Date].[Date Key].[Date Key] on rows
+
+from [Adventure Works DW2012];
+
+--tuples in mdx
+select non empty
+measures.[sales amount] on columns,
+([Due Date].[Date Key].[Date Key],[Dim Sales Territory].[Sales Territory Key].&[5] ) on rows
+
+from [Adventure Works DW2012];
+
+--tuples in mdx
+select 
+{measures.[sales amount], measures.[Order Quantity],measures.[Measures].[Unit Price]} on columns,
+([Ship Date].[Date Key].[Date Key].&[20050101],[Dim Product].[Product Key].&[22]) on rows
+
+from [Adventure Works DW2012];
+
+--sets in mdx
+select 
+{measures.[sales amount],[Measures].[Order Quantity],[Measures].[Tax Amt]} on columns,
+{[Dim Product].[Product Key].&[231],[Dim Product].[Product Key].&[216],[Dim Product].[Product Key].&[220]} on rows
+
+from [Adventure Works DW2012];
+
+--sets and tuples in mdx
+select 
+
+{measures.[sales amount],[Measures].[Order Quantity],[Measures].[Tax Amt]} on columns,
+
+(
+{[Dim Product].[Product Key].&[231],[Dim Product].[Product Key].&[216],[Dim Product].[Product Key].&[220]},
+[Ship Date].[Date Key].[All]
+) on rows
+
+from [Adventure Works DW2012];
+
+
+--sets and tuples(2) in mdx
+select 
+
+{[Measures].[Sales Amount],[Measures].[Order Quantity],[Measures].[Tax Amt]} on columns,
+
+(
+{[Dim Sales Territory 1].[Sales Territory Key].&[4],[Dim Sales Territory 1].[Sales Territory Key].&[8]},
+[Ship Date].[Date Key].[All]
+) on rows
+
+from [Adventure Works DW2016];
+
+
+
+--sets and tuples(3) in mdx
+select 
+
+{[Measures].[Sales Amount],[Measures].[Order Quantity],[Measures].[Tax Amt]} on columns,
+
+(
+{[Dim Sales Territory 1].[Sales Territory Key].&[4],[Dim Sales Territory 1].[Sales Territory Key].&[8]},
+[Due Date].[Calendar Year].&[2014]
+) on rows
+
+from [Adventure Works DW2016];
+
+--sets and tuples(5) in mdx
+select 
+
+{[Measures].[Sales Amount],[Measures].[Order Quantity],[Measures].[Tax Amt]} on columns,
+
+(
+{[Dim Sales Territory 1].[Sales Territory Key].&[4],[Dim Sales Territory 1].[Sales Territory Key].&[8]},
+
+{[Due Date].[Calendar Year].&[2014],
+[Due Date].[Calendar Year].&[2013],
+[Due Date].[Calendar Year].&[2012],
+[Due Date].[Calendar Year].&[2011]}
+) on rows
+
+from [Adventure Works DW2016];
+
+
+--sets and tuples(7) in mdx
+select 
+
+{[Measures].[Sales Amount],[Measures].[Order Quantity],[Measures].[Tax Amt]} on columns,
+
+(
+{[Dim Sales Territory 1].[Sales Territory Key].&[4],[Dim Sales Territory 1].[Sales Territory Key].&[8]},
+
+{[Due Date].[Calendar Year].&[2014],
+[Due Date].[Calendar Year].&[2013],
+[Due Date].[Calendar Year].&[2012],
+[Due Date].[Calendar Year].&[2011]},
+
+{[Due Date].[English Month Name].&[February]}
+) on rows
+
+from [Adventure Works DW2016];
+
+
+
+
+--sets and tuples(8) in mdx
+select non empty
+
+{[Measures].[Sales Amount],[Measures].[Order Quantity],[Measures].[Tax Amt]} on columns,
+
+(
+{[Dim Sales Territory 1].[Sales Territory Key].&[4]},
+
+{[Dim Product 1].[Product Key].[Product Key]}, --note to self, design dimensions better. To show product name and such
+
+{[Due Date].[Calendar Year].&[2014],
+[Due Date].[Calendar Year].&[2013],
+[Due Date].[Calendar Year].&[2012],
+[Due Date].[Calendar Year].&[2011]},
+
+{[Due Date].[English Month Name].&[January],[Due Date].[English Month Name].&[February],[Due Date].[English Month Name].&[March],[Due Date].[English Month Name].&[April]}
+) on rows
+
+from [Adventure Works DW2016];
+
+
+--Case statements(1) in mdx
+with member [Measures].[Sales Condition] as
+case
+when [Measures].[Sales Amount]>5000 then 'Good'
+when [Measures].[Sales Amount]>40000 then 'Better'
+when [Measures].[Sales Amount]>50000 then 'Amazing'
+when [Measures].[Sales Amount]=null then 'No records'
+else 'Nothing special'
+end
+
+select non empty
+
+{[Measures].[Sales Amount],[Measures].[Order Quantity],[Measures].[Tax Amt],[Measures].[Sales Condition]} on columns,
+
+(
+{[Dim Sales Territory 1].[Sales Territory Key].&[4]},
+
+{[Dim Product 1].[Product Key].[Product Key]}, --note to self, design dimensions better. To show product name and such
+
+{[Due Date].[Calendar Year].&[2014],
+[Due Date].[Calendar Year].&[2013],
+[Due Date].[Calendar Year].&[2012],
+[Due Date].[Calendar Year].&[2011]},
+
+{[Due Date].[English Month Name].&[January],[Due Date].[English Month Name].&[February],[Due Date].[English Month Name].&[March],[Due Date].[English Month Name].&[April]}
+) on rows
+
+from [Adventure Works DW2016];
+
+
+--Big Queries(1) 
+select non empty
+
+{[Measures].[Unit Price],[Measures].[Order Quantity],[Measures].[Discount Amount],[Measures].[Sales Amount],[Measures].[Tax Amt]} on columns,
+
+(
+{[Dim Sales Territory 1].[Sales Territory Key].&[4]},
+
+{[Dim Product 1].[Product Key].[Product Key]},
+{[Dim Product 1].[English Product Name].[English Product Name]},
+{[Dim Product 1].[Standard Cost].[Standard Cost]},
+{[Dim Product 1].[Dealer Price].[Dealer Price]}, 
+
+{[Due Date].[Calendar Year].&[2014]},
+
+{[Due Date].[English Month Name].&[January],
+[Due Date].[English Month Name].&[February],
+[Due Date].[English Month Name].&[March],
+[Due Date].[English Month Name].&[April]}
+) on rows
+
+from [Adventure Works DW2016]; --insights is that ppl buy more bikes during spring?
